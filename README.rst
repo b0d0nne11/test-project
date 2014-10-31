@@ -23,6 +23,7 @@ Parameters:
 
 Notes:
 
+* Lifetime value is expressed in cents.
 * Pages are limited to 20 entries.
 * Pages that contain 0 entries will return a '404 Not Found'
 
@@ -35,7 +36,8 @@ Sample response::
   {
     "accounts": [
       {
-        "id": "testid"
+        "id": "testid",
+        "lifetime_value": 1234
       }
     ]
   }
@@ -55,6 +57,10 @@ Parameters:
 | account_id | string   | yes       |          |
 +------------+----------+-----------+----------+
 
+Notes:
+
+* Lifetime value is expressed in cents.
+
 Sample request::
 
   curl -vvv http://localhost/api/v1/accounts/testid
@@ -62,36 +68,8 @@ Sample request::
 Sample response::
 
   {
-    "id": "testid"
-  }
-
-Get account value
-^^^^^^^^^^^^^^^^^
-
-Path::
-
-  /api/v1/accounts/{account_id}/value (GET)
-
-Parameters:
-
-+------------+----------+-----------+----------+
-| Parameter  | Type     | Required? | Default  |
-+------------+----------+-----------+----------+
-| account_id | string   | yes       |          |
-+------------+----------+-----------+----------+
-
-Notes:
-
-* Value is expressed in cents.
-
-Sample request::
-
-  curl -vvv http://localhost/api/v1/accounts/testid/value
-
-Sample response::
-
-  {
-    "value": 1234
+    "id": "testid",
+    "lifetime_value": 1234
   }
 
 List charges
