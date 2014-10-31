@@ -11,21 +11,19 @@ List accounts
 
 Path::
 
-  /api/v1/accounts/?page={page_id} (GET)
+  /api/v1/accounts/?limit={limit} (GET)
 
 Parameters:
 
 +------------+----------+-----------+----------+
 | Parameters | Type     | Required? | Default  |
 +------------+----------+-----------+----------+
-| page_id    | integer  | no        | 1        |
+| limit      | integer  | no        | 100      |
 +------------+----------+-----------+----------+
 
 Notes:
 
 * Lifetime value is expressed in cents.
-* Pages are limited to 20 entries.
-* Pages that contain 0 entries will return a '404 Not Found'
 
 Sample request::
 
@@ -39,7 +37,9 @@ Sample response::
         "id": "testid",
         "lifetime_value": 1234
       }
-    ]
+    ],
+    "next_page": null,
+    "prev_page": null
   }
 
 Get account
@@ -77,20 +77,15 @@ List charges
 
 Path::
 
-  /api/v1/charges/?page={page_id} (GET)
+  /api/v1/charges/?limit={limit} (GET)
 
 Parameters:
 
 +------------+----------+-----------+----------+
 | Parameter  | Type     | Required? | Default  |
 +------------+----------+-----------+----------+
-| page_id    | integer  | no        | 1        |
+| limit      | integer  | no        | 100      |
 +------------+----------+-----------+----------+
-
-Notes:
-
-* Pages are limited to 20 entries.
-* Pages that contain 0 entries will return a '404 Not Found'
 
 Sample request::
 
@@ -106,7 +101,9 @@ Sample response::
         "amount": 100,
         "datetime": "2014-10-27T09:44:55+00:00"
       }
-    ]
+    ],
+    "next_page": null,
+    "prev_page": null
   }
 
 Submit charge
