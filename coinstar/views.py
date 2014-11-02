@@ -8,7 +8,7 @@ import re
 
 
 @app.route('/api/v1/accounts/')
-def list_accounts():
+def accounts():
     accounts = Account.query.all()
     return json.dumps(
         {
@@ -20,7 +20,7 @@ def list_accounts():
 
 
 @app.route('/api/v1/accounts/<account_id>')
-def get_account(account_id):
+def account(account_id):
     account = Account.query.filter_by(ext_account_id=account_id).first_or_404()
     return account.to_json()
 
@@ -100,6 +100,6 @@ def create_charge():
 
 
 @app.route('/api/v1/charges/<int:charge_id>')
-def get_charge(charge_id):
+def charge(charge_id):
     charge = Charge.query.get_or_404(charge_id)
     return charge.to_json()
