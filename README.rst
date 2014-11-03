@@ -3,6 +3,29 @@ test-project
 
 This demo project collects charges associated with accounts in order to determine the value of those accounts.
 
+Setup
+-----
+
+Install the application dependancies with::
+
+    pip install -r requirements.txt
+
+Setup the database with::
+
+    mysqladmin -h localhost -u root -p create coinstar
+    mysql -h localhost -u root -p -D coinstar < coinstar.sql
+
+Start the development application with::
+
+    python run.py
+
+Testing
+-------
+
+Run the test suite with::
+
+    python -m unittest discover
+
 API Usage
 ---------
 
