@@ -68,11 +68,9 @@ class Pagination():
     def items(self):
         return self.query.offset(self.page_offset).limit(self.page_limit).all()
 
-    def to_json(self):
-        return json.dumps(
-            {
-                self.collection: [entry.to_hash() for entry in self.items()],
-                'prev_page': self.prev_link(),
-                'next_page': self.next_link()
-            }
-        )
+    def to_dict(self):
+        return {
+            self.collection: [entry.to_dict() for entry in self.items()],
+            'prev_page': self.prev_link(),
+            'next_page': self.next_link()
+        }

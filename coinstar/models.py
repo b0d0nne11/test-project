@@ -21,14 +21,11 @@ class Account(db.Model):
     def value(self):
         return sum([charge.amount for charge in self.charges])
 
-    def to_hash(self):
+    def to_dict(self):
         return {
             'id': self.ext_account_id,
             'lifetime_value': self.value()
         }
-
-    def to_json(self):
-        return json.dumps(self.to_hash())
 
 
 class Charge(db.Model):
@@ -45,13 +42,10 @@ class Charge(db.Model):
     def __repr__(self):
         return '<Charge {}>'.format(self.id)
 
-    def to_hash(self):
+    def to_dict(self):
         return {
             'id': self.id,
             'account_id': self.account.ext_account_id,
             'amount': self.amount,
             'datetime': self.datetime.isoformat()
         }
-
-    def to_json(self):
-        return json.dumps(self.to_hash())

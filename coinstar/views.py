@@ -3,10 +3,14 @@ from coinstar.errors import GenericError, BadRequest, NotFound
 from coinstar.models import db, Account, Charge
 from coinstar.pagination import Pagination
 
-from flask import request
+from flask import request, jsonify, make_response
 from datetime import datetime
-import json
 import re
+
+
+def make_json_response(payload):
+    return make_response(
+        jsonify(payload), 200, {'Content-Type': 'application/json'})
 
 
 @app.route('/api/v1/accounts/')
@@ -29,7 +33,7 @@ def accounts():
     except ValueError, e:
         raise BadRequest('Failed to load page')
 
-    return page.to_json()
+    return make_json_response(page.to_dict())
 
 
 @app.route('/api/v1/accounts/<account_id>')
@@ -38,7 +42,7 @@ def account(account_id):
     account = Account.query.filter_by(ext_account_id=account_id).first()
     if account is None:
         raise NotFound('Account not found')
-    return account.to_json()
+    return make_json_response(account.to_dict())
 
 
 @app.route('/api/v1/charges/', methods=['GET', 'POST'])
@@ -68,7 +72,7 @@ def list_charges():
     except ValueError, e:
         raise BadRequest('Failed to load page')
 
-    return page.to_json()
+    return make_json_response(page.to_dict())
 
 
 def create_charge():
@@ -127,7 +131,7 @@ def create_charge():
         raise GenericError('Failed to create charge object')
 
     # Finally, return the charge object as JSON
-    return charge.to_json()
+    return make_json_response(charge.to_dict())
 
 
 @app.route('/api/v1/charges/<charge_id>')
@@ -136,4 +140,4 @@ def charge(charge_id):
     charge = Charge.query.get(charge_id)
     if charge is None:
         raise NotFound('Charge not found')
-    return charge.to_json()
+    return make_json_response(charge.to_dict())
