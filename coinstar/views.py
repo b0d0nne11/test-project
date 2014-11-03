@@ -1,5 +1,6 @@
 from coinstar import app
 from coinstar.models import db, Account, Charge
+from coinstar.pagination import Pagination
 
 from flask import request
 from datetime import datetime
@@ -9,14 +10,23 @@ import re
 
 @app.route('/api/v1/accounts/')
 def accounts():
-    accounts = Account.query.all()
-    return json.dumps(
-        {
-            'accounts': [account.to_hash() for account in accounts],
-            'prev_page': None,
-            'next_page': None
-        }
-    )
+    # Validate the page limit
+    try:
+        page_limit = int(request.args.get('limit', default=100))
+    except ValueError, e:
+        return '{"error": "Limit is not an integer"}', 400
+    if page_limit < 1:
+        return '{"error": "Limit is too small"}', 400
+    if page_limit > 1000:
+        return '{"error": "Limit is too large"}', 400
+
+    # Validate the page object
+    try:
+        page = Pagination(Account, request.args)
+    except ValueError, e:
+        return '{"error": "Failed to load page"}', 400
+
+    return page.to_json()
 
 
 @app.route('/api/v1/accounts/<account_id>')
@@ -34,14 +44,23 @@ def charges():
 
 
 def list_charges():
-    charges = Charge.query.all()
-    return json.dumps(
-        {
-            'charges': [charge.to_hash() for charge in charges],
-            'prev_page': None,
-            'next_page': None
-        }
-    )
+    # Validate the page limit
+    try:
+        page_limit = int(request.args.get('limit', default=100))
+    except ValueError, e:
+        return '{"error": "Limit is not an integer"}', 400
+    if page_limit < 1:
+        return '{"error": "Limit is too small"}', 400
+    if page_limit > 1000:
+        return '{"error": "Limit is too large"}', 400
+
+    # Validate the page object
+    try:
+        page = Pagination(Charge, request.args)
+    except ValueError, e:
+        return '{"error": "Failed to load page"}', 400
+
+    return page.to_json()
 
 
 def create_charge():
