@@ -1,4 +1,5 @@
 from coinstar import app
+from coinstar.errors import GenericError, BadRequest, NotFound
 from coinstar.models import db, Account, Charge
 from coinstar.pagination import Pagination
 
@@ -16,17 +17,17 @@ def accounts():
     try:
         page_limit = int(request.args.get('limit', default=100))
     except ValueError, e:
-        return '{"error": "Limit is not an integer"}', 400
+        raise BadRequest('Limit is not an integer')
     if page_limit < 1:
-        return '{"error": "Limit is too small"}', 400
+        raise BadRequest('Limit is too small')
     if page_limit > 1000:
-        return '{"error": "Limit is too large"}', 400
+        raise BadRequest('Limit is too large')
 
     # Validate the page object
     try:
         page = Pagination(Account, request.args)
     except ValueError, e:
-        return '{"error": "Failed to load page"}', 400
+        raise BadRequest('Failed to load page')
 
     return page.to_json()
 
@@ -34,7 +35,9 @@ def accounts():
 @app.route('/api/v1/accounts/<account_id>')
 def account(account_id):
     app.logger.debug('Entering get account handler')
-    account = Account.query.filter_by(ext_account_id=account_id).first_or_404()
+    account = Account.query.filter_by(ext_account_id=account_id).first()
+    if account is None:
+        raise NotFound('Account not found')
     return account.to_json()
 
 
@@ -53,17 +56,17 @@ def list_charges():
     try:
         page_limit = int(request.args.get('limit', default=100))
     except ValueError, e:
-        return '{"error": "Limit is not an integer"}', 400
+        raise BadRequest('Limit is not an integer')
     if page_limit < 1:
-        return '{"error": "Limit is too small"}', 400
+        raise BadRequest('Limit is too small')
     if page_limit > 1000:
-        return '{"error": "Limit is too large"}', 400
+        raise BadRequest('Limit is too large')
 
     # Validate the page object
     try:
         page = Pagination(Charge, request.args)
     except ValueError, e:
-        return '{"error": "Failed to load page"}', 400
+        raise BadRequest('Failed to load page')
 
     return page.to_json()
 
@@ -75,30 +78,30 @@ def create_charge():
     try:
         amount = int(request.form['amount'])
     except KeyError, e:
-        return '{"error": "Missing amount"}', 400
+        raise BadRequest('Missing amount')
     except ValueError, e:
-        return '{"error": "Amount is not an integer"}', 400
+        raise BadRequest('Amount is not an integer')
 
     # Validate the charge timestamp
     try:
         timestamp = datetime.strptime(
             request.form['datetime'], '%Y-%m-%dT%H:%M:%S')
     except KeyError, e:
-        return '{"error": "Missing datetime"}', 400
+        raise BadRequest('Missing datetime')
     except ValueError, e:
-        return '{"error": "Bad datetime format"}', 400
+        raise BadRequest('Bad datetime format')
 
     # Validate the charge account ID
     try:
         account_id = str(request.form['account_id'])
     except KeyError, e:
-        return '{"error": "Missing account ID"}', 400
+        raise BadRequest('Missing account ID')
     if account_id is None or account_id == '':
-        return '{"error": "Empty account ID"}', 400
+        raise BadRequest('Empty account ID')
     if len(account_id) > 80:
-        return '{"error": "Account ID is to long"}', 400
+        raise BadRequest('Account ID is to long')
     if not re.match(r'^\w+$', account_id):
-        return '{"error": "Account ID contains invalid characters"}', 400
+        raise BadRequest('Account ID contains invalid characters')
 
     # Load the charge account object...
     account = Account.query.filter_by(ext_account_id=account_id).first()
@@ -112,7 +115,7 @@ def create_charge():
             db.session.commit()
             app.logger.debug('Created {}'.format(account))
         except:
-            return '{"error": "Failed to create account object"}', 500
+            raise GenericError('Failed to create account object')
 
     # Create the charge object
     try:
@@ -121,14 +124,16 @@ def create_charge():
         db.session.commit()
         app.logger.debug('Created {}'.format(charge))
     except:
-        return '{"error": "Failed to create charge object"}', 500
+        raise GenericError('Failed to create charge object')
 
     # Finally, return the charge object as JSON
     return charge.to_json()
 
 
-@app.route('/api/v1/charges/<int:charge_id>')
+@app.route('/api/v1/charges/<charge_id>')
 def charge(charge_id):
     app.logger.debug('Entering get charge handler')
-    charge = Charge.query.get_or_404(charge_id)
+    charge = Charge.query.get(charge_id)
+    if charge is None:
+        raise NotFound('Charge not found')
     return charge.to_json()

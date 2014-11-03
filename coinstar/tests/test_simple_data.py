@@ -35,7 +35,9 @@ class SimpleDataTests(CoinstarUnitTest):
 
     def test_account_not_found(self):
         r = self.app.get('/api/v1/accounts/gobbledygook')
+        json_data = json.loads(r.data)
         self.assertEqual(r.status_code, 404)
+        self.assertEqual(json_data['error'], 'Account not found')
 
     def test_list_charges(self):
         r = self.app.get('/api/v1/charges/')
@@ -63,4 +65,6 @@ class SimpleDataTests(CoinstarUnitTest):
 
     def test_charge_not_found(self):
         r = self.app.get('/api/v1/charges/100')
+        json_data = json.loads(r.data)
         self.assertEqual(r.status_code, 404)
+        self.assertEqual(json_data['error'], 'Charge not found')
