@@ -23,6 +23,8 @@ Parameters:
 
 Notes:
 
+* Limit must be a positive integer
+* Limit must be less than 1000
 * Lifetime value is expressed in cents.
 
 Sample request::
@@ -87,6 +89,11 @@ Parameters:
 | limit      | integer  | no        | 100      |
 +------------+----------+-----------+----------+
 
+Notes:
+
+* Limit must be a positive integer
+* Limit must be less than 1000
+
 Sample request::
 
   curl -vvv http://localhost/api/v1/charges/
@@ -129,9 +136,10 @@ Notes:
 
 * Parameters should be submitted as form data with a Content-Type of application/x-www-form-urlencoded.
 * Account IDs are limited to 80 characters.
+* Account IDs are limited to the following characters: [A-Za-z0-9\_].
 * Account IDs that don't exist will be created.
 * Amount should be a whole number of cents.
-* Datetime should be expressed according to ISO 8601 (i.e. YYYY-MM-DDTHH:MM:SS+HH:MM).
+* Datetime should be expressed according to ISO 8601 (i.e. YYYY-MM-DDTHH:MM:SS).
 
 Sample request::
 
