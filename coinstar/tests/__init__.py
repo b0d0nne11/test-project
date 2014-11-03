@@ -11,6 +11,7 @@ class CoinstarUnitTest(unittest.TestCase):
     def setUp(self):
         self.db_fd, self.db_path = tempfile.mkstemp()
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + self.db_path
+        app.config['DEBUG'] = False
         app.config['TESTING'] = True
         self.app = app.test_client()
         db.create_all()

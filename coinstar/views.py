@@ -10,6 +10,8 @@ import re
 
 @app.route('/api/v1/accounts/')
 def accounts():
+    app.logger.debug('Entering list accounts handler')
+
     # Validate the page limit
     try:
         page_limit = int(request.args.get('limit', default=100))
@@ -31,6 +33,7 @@ def accounts():
 
 @app.route('/api/v1/accounts/<account_id>')
 def account(account_id):
+    app.logger.debug('Entering get account handler')
     account = Account.query.filter_by(ext_account_id=account_id).first_or_404()
     return account.to_json()
 
@@ -44,6 +47,8 @@ def charges():
 
 
 def list_charges():
+    app.logger.debug('Entering list accounts handler')
+
     # Validate the page limit
     try:
         page_limit = int(request.args.get('limit', default=100))
@@ -64,6 +69,8 @@ def list_charges():
 
 
 def create_charge():
+    app.logger.debug('Entering create account handler')
+
     # Validate the charge amount
     try:
         amount = int(request.form['amount'])
@@ -98,9 +105,12 @@ def create_charge():
 
     # ... or create it if necessary
     if account is None:
+        app.logger.debug('Account "{}" not found'.format(account_id))
         try:
             account = Account(account_id)
             db.session.add(account)
+            db.session.commit()
+            app.logger.debug('Created {}'.format(account))
         except:
             return '{"error": "Failed to create account object"}', 500
 
@@ -108,11 +118,10 @@ def create_charge():
     try:
         charge = Charge(account, amount, timestamp)
         db.session.add(charge)
+        db.session.commit()
+        app.logger.debug('Created {}'.format(charge))
     except:
         return '{"error": "Failed to create charge object"}', 500
-
-    # Commit the DB changes
-    db.session.commit()
 
     # Finally, return the charge object as JSON
     return charge.to_json()
@@ -120,5 +129,6 @@ def create_charge():
 
 @app.route('/api/v1/charges/<int:charge_id>')
 def charge(charge_id):
+    app.logger.debug('Entering get charge handler')
     charge = Charge.query.get_or_404(charge_id)
     return charge.to_json()
