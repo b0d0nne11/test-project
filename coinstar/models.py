@@ -18,13 +18,10 @@ class Account(db.Model):
     def __repr__(self):
         return '<Account {}>'.format(self.ext_account_id)
 
-    def value(self):
-        return sum([charge.amount for charge in self.charges])
-
     def to_dict(self):
         return {
             'id': self.ext_account_id,
-            'lifetime_value': self.value()
+            'lifetime_value': int(self.lifetime_value)
         }
 
 
@@ -49,3 +46,10 @@ class Charge(db.Model):
             'amount': self.amount,
             'datetime': self.datetime.isoformat()
         }
+
+
+Account.lifetime_value = db.column_property(
+    db.session.query(
+        db.func.sum(Charge.amount)
+    ).filter(Account.id == Charge.account_id).label('lifetime_value')
+)

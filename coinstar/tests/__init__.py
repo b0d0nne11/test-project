@@ -14,6 +14,7 @@ class CoinstarUnitTest(unittest.TestCase):
         app.config['DEBUG'] = False
         app.config['TESTING'] = True
         self.app = app.test_client()
+        db.session.remove()
         db.create_all()
 
     def tearDown(self):
