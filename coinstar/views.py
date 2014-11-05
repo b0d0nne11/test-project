@@ -1,7 +1,7 @@
 from coinstar import app
 from coinstar.errors import GenericError, BadRequest, NotFound
 from coinstar.models import db, Account, Charge
-from coinstar.pagination import Pagination
+from coinstar.pagination import Page
 
 from flask import request, jsonify, make_response
 from datetime import datetime
@@ -29,7 +29,7 @@ def list_accounts():
 
     # Validate the page object
     try:
-        page = Pagination(Account, request.args)
+        page = Page(Account, request.args)
     except ValueError, e:
         raise BadRequest('Failed to load page')
 
@@ -61,7 +61,7 @@ def list_charges():
 
     # Validate the page object
     try:
-        page = Pagination(Charge, request.args)
+        page = Page(Charge, request.args)
     except ValueError, e:
         raise BadRequest('Failed to load page')
 

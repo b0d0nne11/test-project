@@ -16,7 +16,7 @@ def decode(page):
     return json.loads(b64decode(page))
 
 
-class Pagination():
+class Page():
 
     def __init__(self, obj, args):
         self.query = obj.query
