@@ -14,7 +14,7 @@ def make_json_response(payload):
 
 
 @app.route('/api/v1/accounts/')
-def accounts():
+def list_accounts():
     app.logger.debug('Entering list accounts handler')
 
     # Validate the page limit
@@ -37,7 +37,7 @@ def accounts():
 
 
 @app.route('/api/v1/accounts/<account_id>')
-def account(account_id):
+def get_account(account_id):
     app.logger.debug('Entering get account handler')
     account = Account.query.filter_by(ext_account_id=account_id).first()
     if account is None:
@@ -45,14 +45,7 @@ def account(account_id):
     return make_json_response(account.to_dict())
 
 
-@app.route('/api/v1/charges/', methods=['GET', 'POST'])
-def charges():
-    if request.method == 'POST':
-        return create_charge()
-    else:
-        return list_charges()
-
-
+@app.route('/api/v1/charges/', methods=['GET'])
 def list_charges():
     app.logger.debug('Entering list accounts handler')
 
@@ -75,6 +68,7 @@ def list_charges():
     return make_json_response(page.to_dict())
 
 
+@app.route('/api/v1/charges/', methods=['POST'])
 def create_charge():
     app.logger.debug('Entering create account handler')
 
@@ -135,7 +129,7 @@ def create_charge():
 
 
 @app.route('/api/v1/charges/<charge_id>')
-def charge(charge_id):
+def get_charge(charge_id):
     app.logger.debug('Entering get charge handler')
     charge = Charge.query.get(charge_id)
     if charge is None:

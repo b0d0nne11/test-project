@@ -43,7 +43,7 @@ class Pagination():
         return '{proto}://{server_name}{url}?page={opaque_page}'.format(
             proto=app.config['PREFERRED_URL_SCHEME'],
             server_name=app.config['SERVER_NAME'],
-            url=url_for(self.collection),
+            url=url_for('list_{}'.format(self.collection)),
             opaque_page=encode(page_data)
         )
 
