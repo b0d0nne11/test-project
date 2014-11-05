@@ -18,26 +18,26 @@ def decode(page):
 
 class Page():
 
-    def __init__(self, obj, args):
-        self.query = obj.query
-        self.collection = p.plural(obj.__tablename__)
+    def __init__(self, model, args):
+        self.model = model
+        self.collection = p.plural(model.__tablename__)
         self.opaque_page = args.get('page')
 
         if self.opaque_page is None:
-            self.page_offset = 0
-            self.page_limit = int(args.get('limit', default=100))
+            self.page = {
+                'last_id': 0,
+                'limit': int(args.get('limit', default=100))
+            }
         else:
-            page = decode(self.opaque_page)
-            self.page_offset = int(page['offset'])
-            self.page_limit = int(page['limit'])
+            self.page = decode(self.opaque_page)
 
-        self.total_entries = self.query.count()
+        self.total_entries = self.model.query.count()
 
     def has_prev(self):
-        return self.page_offset > 0
+        return self.page['last_id'] > 0
 
     def has_next(self):
-        return self.page_offset + self.page_limit < self.total_entries
+        return self.page['last_id'] + self.page['limit'] < self.total_entries
 
     def link(self, page_data):
         return '{proto}://{server_name}{url}?page={opaque_page}'.format(
@@ -50,8 +50,8 @@ class Page():
     def prev_link(self):
         if self.has_prev():
             return self.link({
-                'offset': self.page_offset - self.page_limit,
-                'limit': self.page_limit
+                'last_id': self.page['last_id'] - self.page['limit'],
+                'limit': self.page['limit']
             })
         else:
             return None
@@ -59,14 +59,16 @@ class Page():
     def next_link(self):
         if self.has_next():
             return self.link({
-                'offset': self.page_offset + self.page_limit,
-                'limit': self.page_limit
+                'last_id': self.page['last_id'] + self.page['limit'],
+                'limit': self.page['limit']
             })
         else:
             return None
 
     def items(self):
-        return self.query.offset(self.page_offset).limit(self.page_limit).all()
+        return self.model.query.filter(
+            self.model.id > self.page['last_id']
+        ).limit(self.page['limit']).all()
 
     def to_dict(self):
         return {
