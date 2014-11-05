@@ -168,7 +168,7 @@ Sample request::
   curl -vvv \
     -d 'account_id=testid' \
     -d 'amount=100' \
-    -d 'datetime=2014-10-27T09:44:55+00:00' \
+    -d 'datetime=2014-10-27T09:44:55' \
     http://localhost/api/v1/charges/
 
 Sample response::
@@ -177,7 +177,7 @@ Sample response::
     "id": 1,
     "account_id": "testid",
     "amount": 100,
-    "datetime": "2014-10-27T09:44:55+00:00"
+    "datetime": "2014-10-27T09:44:55"
   }
 
 Get charge
@@ -205,6 +205,6 @@ Sample response::
     "id": 1,
     "account_id": "testid",
     "amount": 100,
-    "datetime": "2014-10-27T09:44:55+00:00"
+    "datetime": "2014-10-27T09:44:55"
   }
 
