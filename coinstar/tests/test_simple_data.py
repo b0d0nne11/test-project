@@ -9,7 +9,7 @@ class SimpleDataTests(CoinstarUnitTest):
         super(SimpleDataTests, self).setUp()
         r = self.app.post('/api/v1/charges/', data=dict(
             account_id='testid',
-            amount=100,
+            cents=100,
             datetime='2014-10-27T09:44:55'
         ))
 
@@ -47,7 +47,7 @@ class SimpleDataTests(CoinstarUnitTest):
             {
                 'id': 1,
                 'account_id': 'testid',
-                'amount': 100,
+                'cents': 100,
                 'datetime': '2014-10-27T09:44:55'
             }
         ])
@@ -60,7 +60,7 @@ class SimpleDataTests(CoinstarUnitTest):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(json_data['id'], 1)
         self.assertEqual(json_data['account_id'], 'testid')
-        self.assertEqual(json_data['amount'], 100)
+        self.assertEqual(json_data['cents'], 100)
         self.assertEqual(json_data['datetime'], '2014-10-27T09:44:55')
 
     def test_charge_not_found(self):

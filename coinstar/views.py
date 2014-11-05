@@ -80,11 +80,11 @@ def create_charge():
 
     # Validate the charge amount
     try:
-        amount = int(request.form['amount'])
+        cents = int(request.form['cents'])
     except KeyError, e:
-        raise BadRequest('Missing amount')
+        raise BadRequest('Missing cents')
     except ValueError, e:
-        raise BadRequest('Amount is not an integer')
+        raise BadRequest('Cents is not an integer')
 
     # Validate the charge timestamp
     try:
@@ -123,7 +123,7 @@ def create_charge():
 
     # Create the charge object
     try:
-        charge = Charge(account, amount, timestamp)
+        charge = Charge(account, cents, timestamp)
         db.session.add(charge)
         db.session.commit()
         app.logger.debug('Created {}'.format(charge))

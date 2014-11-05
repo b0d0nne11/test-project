@@ -28,12 +28,12 @@ class Account(db.Model):
 class Charge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
-    amount = db.Column(db.Integer)
+    cents = db.Column(db.Integer)
     datetime = db.Column(db.DateTime)
 
-    def __init__(self, account, amount, datetime):
+    def __init__(self, account, cents, datetime):
         self.account = account
-        self.amount = int(amount)
+        self.cents = int(cents)
         self.datetime = datetime
 
     def __repr__(self):
@@ -43,13 +43,13 @@ class Charge(db.Model):
         return {
             'id': self.id,
             'account_id': self.account.ext_account_id,
-            'amount': self.amount,
+            'cents': self.cents,
             'datetime': self.datetime.isoformat()
         }
 
 
 Account.lifetime_value = db.column_property(
     db.session.query(
-        db.func.sum(Charge.amount)
+        db.func.sum(Charge.cents)
     ).filter(Account.id == Charge.account_id).label('lifetime_value')
 )

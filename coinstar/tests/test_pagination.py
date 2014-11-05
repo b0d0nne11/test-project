@@ -12,7 +12,7 @@ class PaginationDataTests(CoinstarUnitTest):
         for i in range(self.total_entries):
             r = self.app.post('/api/v1/charges/', data=dict(
                 account_id='testid{}'.format(i),
-                amount=100,
+                cents=100,
                 datetime='2014-10-27T09:44:55'
             ))
 

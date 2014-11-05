@@ -31,15 +31,6 @@ CREATE TABLE `account` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `account`
---
-
-LOCK TABLES `account` WRITE;
-/*!40000 ALTER TABLE `account` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `charge`
 --
 
@@ -49,22 +40,13 @@ DROP TABLE IF EXISTS `charge`;
 CREATE TABLE `charge` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) DEFAULT NULL,
-  `amount` int(11) DEFAULT NULL,
+  `cents` int(11) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `account_id` (`account_id`),
   CONSTRAINT `charge_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `charge`
---
-
-LOCK TABLES `charge` WRITE;
-/*!40000 ALTER TABLE `charge` DISABLE KEYS */;
-/*!40000 ALTER TABLE `charge` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -75,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-03  0:49:12
+-- Dump completed on 2014-11-04 22:51:49

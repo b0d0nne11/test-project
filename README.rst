@@ -150,7 +150,7 @@ Parameters:
 +------------+----------+-----------+----------+
 | account_id | string   | yes       |          |
 +------------+----------+-----------+----------+
-| amount     | integer  | yes       |          |
+| cents      | integer  | yes       |          |
 +------------+----------+-----------+----------+
 | datetime   | datetime | yes       |          |
 +------------+----------+-----------+----------+
@@ -161,7 +161,6 @@ Notes:
 * Account IDs are limited to 80 characters.
 * Account IDs are limited to the following characters: [A-Za-z0-9\_].
 * Account IDs that don't exist will be created.
-* Amount should be a whole number of cents.
 * Datetime should be expressed according to ISO 8601 (i.e. YYYY-MM-DDTHH:MM:SS).
 
 Sample request::
