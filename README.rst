@@ -3,6 +3,29 @@ test-project
 
 This demo project collects charges associated with accounts in order to determine the value of those accounts.
 
+Setup
+-----
+
+Install the application dependancies with::
+
+    pip install -r requirements.txt
+
+Setup the database with::
+
+    mysqladmin -h localhost -u root -p create coinstar
+    mysql -h localhost -u root -p -D coinstar < coinstar.sql
+
+Start the development application with::
+
+    python run.py
+
+Testing
+-------
+
+Run the test suite with::
+
+    python -m unittest discover
+
 API Usage
 ---------
 
@@ -23,6 +46,8 @@ Parameters:
 
 Notes:
 
+* Limit must be a positive integer
+* Limit must be less than 1000
 * Lifetime value is expressed in cents.
 
 Sample request::
@@ -87,6 +112,11 @@ Parameters:
 | limit      | integer  | no        | 100      |
 +------------+----------+-----------+----------+
 
+Notes:
+
+* Limit must be a positive integer
+* Limit must be less than 1000
+
 Sample request::
 
   curl -vvv http://localhost/api/v1/charges/
@@ -120,7 +150,7 @@ Parameters:
 +------------+----------+-----------+----------+
 | account_id | string   | yes       |          |
 +------------+----------+-----------+----------+
-| amount     | integer  | yes       |          |
+| cents      | integer  | yes       |          |
 +------------+----------+-----------+----------+
 | datetime   | datetime | yes       |          |
 +------------+----------+-----------+----------+
@@ -129,16 +159,16 @@ Notes:
 
 * Parameters should be submitted as form data with a Content-Type of application/x-www-form-urlencoded.
 * Account IDs are limited to 80 characters.
+* Account IDs are limited to the following characters: [A-Za-z0-9\_].
 * Account IDs that don't exist will be created.
-* Amount should be a whole number of cents.
-* Datetime should be expressed according to ISO 8601 (i.e. YYYY-MM-DDTHH:MM:SS+HH:MM).
+* Datetime should be expressed according to ISO 8601 (i.e. YYYY-MM-DDTHH:MM:SS).
 
 Sample request::
 
   curl -vvv \
     -d 'account_id=testid' \
     -d 'amount=100' \
-    -d 'datetime=2014-10-27T09:44:55+00:00' \
+    -d 'datetime=2014-10-27T09:44:55' \
     http://localhost/api/v1/charges/
 
 Sample response::
@@ -147,7 +177,7 @@ Sample response::
     "id": 1,
     "account_id": "testid",
     "amount": 100,
-    "datetime": "2014-10-27T09:44:55+00:00"
+    "datetime": "2014-10-27T09:44:55"
   }
 
 Get charge
@@ -175,6 +205,6 @@ Sample response::
     "id": 1,
     "account_id": "testid",
     "amount": 100,
-    "datetime": "2014-10-27T09:44:55+00:00"
+    "datetime": "2014-10-27T09:44:55"
   }
 
