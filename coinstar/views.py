@@ -102,12 +102,6 @@ def create_charge():
         account_id = str(request.form['account_id'])
     except KeyError, e:
         raise BadRequest('Missing account ID')
-    if account_id is None or account_id == '':
-        raise BadRequest('Empty account ID')
-    if len(account_id) > 80:
-        raise BadRequest('Account ID is to long')
-    if not re.match(r'^\w+$', account_id):
-        raise BadRequest('Account ID contains invalid characters')
 
     # Load the charge account object...
     account = Account.query.filter_by(ext_account_id=account_id).first()
@@ -115,8 +109,8 @@ def create_charge():
     # ... or create it if necessary
     if account is None:
         app.logger.debug('Account "{}" not found'.format(account_id))
+        account = Account(account_id)
         try:
-            account = Account(account_id)
             db.session.add(account)
             db.session.commit()
             app.logger.debug('Created {}'.format(account))
@@ -124,8 +118,8 @@ def create_charge():
             raise GenericError('Failed to create account object')
 
     # Create the charge object
+    charge = Charge(account, cents, timestamp)
     try:
-        charge = Charge(account, cents, timestamp)
         db.session.add(charge)
         db.session.commit()
         app.logger.debug('Created {}'.format(charge))
