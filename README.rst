@@ -19,6 +19,8 @@ Start the development application with::
 
     python run.py
 
+Checkout the overview page at http://localhost:8000/overview.
+
 Testing
 -------
 
@@ -52,7 +54,7 @@ Notes:
 
 Sample request::
 
-  curl -vvv http://localhost/api/v1/accounts/
+  curl -vvv http://localhost:8000/api/v1/accounts/
 
 Sample response::
 
@@ -88,7 +90,7 @@ Notes:
 
 Sample request::
 
-  curl -vvv http://localhost/api/v1/accounts/testid
+  curl -vvv http://localhost:8000/api/v1/accounts/testid
 
 Sample response::
 
@@ -119,7 +121,7 @@ Notes:
 
 Sample request::
 
-  curl -vvv http://localhost/api/v1/charges/
+  curl -vvv http://localhost:8000/api/v1/charges/
 
 Sample response::
 
@@ -169,7 +171,7 @@ Sample request::
     -d 'account_id=testid' \
     -d 'amount=100' \
     -d 'datetime=2014-10-27T09:44:55' \
-    http://localhost/api/v1/charges/
+    http://localhost:8000/api/v1/charges/
 
 Sample response::
 
@@ -197,7 +199,7 @@ Parameters:
 
 Sample request::
 
-  curl -vvv http://localhost/api/v1/charges/1
+  curl -vvv http://localhost:8000/api/v1/charges/1
 
 Sample response::
 
