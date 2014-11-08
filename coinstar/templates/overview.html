@@ -1,101 +1,75 @@
-<!doctype html>
-<html class="no-js" lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coinstar | Overview</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
-    <script src="{{ url_for('static', filename='js/vendor/modernizr.js') }}"></script>
-  </head>
-  <body>
-
-    <div class="row">
-      <div class="large-12 columns">
-        <h1>Welcome to Coinstar</h1>
-      </div>
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block welcome %}Welcome to Coinstar{% endblock %}
+{% block content %}
+  <div class="row">
+	  <div class="large-12 columns">
+      <h3>Get Account Value</h3>
+	    <input type="text" name="account_id" placeholder="Account ID" />
+      <a href="#" id="fetch_value" class="small button right">Fetch Value</a>
+      <p>Lifetime account value: <span id="lifetime_value"></span></p>
     </div>
-
-    <div class="row">
-      <div class="large-2 columns">
-        <ul class="side-nav">
-          <li><a href="/overview">Overview</a></li>
-        </ul>
-      </div>
-      <div class="large-10 columns">
-        <div class="row">
-				  <div class="large-12 columns">
-            <h3>Get Account Value</h3>
-				    <input type="text" name="account_id" placeholder="Account ID" />
-            <a href="#" id="fetch_value" class="small button right">Fetch Value</a>
-            <p>Lifetime account value: <span id="lifetime_value"></span></p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="large-6 columns">
-            <h3>Latest Charges</h3>
-            <table width="100%">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Account</th>
-                  <th>Amount</th>
-                  <th>Timestamp</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for charge in charges %}
-                <tr>
-                  <td class="text-right">{{ charge.id }}</td>
-                  <td>{{ charge.account.ext_account_id }}</td>
-                  <td class="text-right">{{ charge.cents }}¢</td>
-                  <td>{{ charge.datetime }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          <div class="large-6 columns">
-            <h3>Highest Value Accounts</h3>
-            <table width="100%">
-              <thead>
-                <tr>
-                  <th>Account</th>
-                  <th>Lifetime Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for account in accounts %}
-                <tr>
-                  <td>{{ account.ext_account_id }}</td>
-                  <td class="text-right">{{ account.lifetime_value }}¢</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  </div>
+  <div class="row">
+    <div class="large-6 columns">
+      <h3>Latest Charges</h3>
+      <table width="100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Account</th>
+            <th>Amount</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for charge in charges %}
+          <tr>
+            <td class="text-right">{{ charge.id }}</td>
+            <td>{{ charge.account.ext_account_id }}</td>
+            <td class="text-right">{{ charge.cents }}¢</td>
+            <td>{{ charge.datetime }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-
-    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
-    <script>
-      $(document).foundation();
-    </script>
-    <script type=text/javascript>
-      $(function() {
-        $('a#fetch_value').bind('click', function() {
-          $("span#lifetime_value").text('');
-          if ($('input[name="account_id"]').val() == '') {
-            return
-          }
-          $.getJSON('/api/v1/accounts/' + $('input[name="account_id"]').val(), {}, function(account) {
-            $("span#lifetime_value").text(account.lifetime_value + '¢');
-          }).fail(function() {
-            $("span#lifetime_value").text('Not found');
-          });
+    <div class="large-6 columns">
+      <h3>Highest Value Accounts</h3>
+      <table width="100%">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Lifetime Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for account in accounts %}
+          <tr>
+            <td>{{ account.ext_account_id }}</td>
+            <td class="text-right">{{ account.lifetime_value }}¢</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+{% block footer %}
+  {{ super() }}
+  <script type=text/javascript>
+    $(function() {
+      $('a#fetch_value').bind('click', function() {
+        $("span#lifetime_value").text('');
+        if ($('input[name="account_id"]').val() == '') {
+          return
+        }
+        $.getJSON('/api/v1/accounts/' + $('input[name="account_id"]').val(), {}, function(account) {
+          $("span#lifetime_value").text(account.lifetime_value + '¢');
+        }).fail(function() {
+          $("span#lifetime_value").text('Not found');
         });
       });
-    </script>
-  </body>
-</html>
+    });
+  </script>
+{% endblock %}
