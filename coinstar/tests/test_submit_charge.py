@@ -74,8 +74,8 @@ class SubmitChargeTests(CoinstarUnitTest):
 
     def test_submit_w_empty_cents(self):
         r = self.app.post('/api/v1/charges/', data=dict(
-            account_id='',
-            cents='notanumber',
+            account_id='testid',
+            cents='',
             datetime='2014-10-27T09:44:55'
         ))
         json_data = json.loads(r.data)
