@@ -46,7 +46,7 @@ class Charge(db.Model):
 
     def __init__(self, account, cents, datetime):
         self.account = account
-        self.cents = int(cents)
+        self.cents = cents
         self.datetime = datetime
 
     def __repr__(self):
@@ -63,13 +63,19 @@ class Charge(db.Model):
     @db.validates('cents')
     def validates_cents(self, key, cents):
         if not isinstance(cents, int):
-            raise BadRequest('Cents is not an integer')
+            try:
+                cents = int(cents)
+            except (ValueError, TypeError), e:
+                raise BadRequest('Cents is not an integer')
         return cents
 
     @db.validates('datetime')
     def validates_timestamp(self, key, timestamp):
         if not isinstance(timestamp, datetime):
-            raise BadRequest('Datetime is not a datetime')
+            try:
+                timestamp = datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S')
+            except (ValueError, TypeError), e:
+                raise BadRequest('Bad datetime format')
         return timestamp
 
 

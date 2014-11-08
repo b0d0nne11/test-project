@@ -80,28 +80,9 @@ def list_charges():
 def create_charge():
     app.logger.debug('Entering create account handler')
 
-    # Validate the charge amount
-    try:
-        cents = int(request.form['cents'])
-    except KeyError, e:
-        raise BadRequest('Missing cents')
-    except ValueError, e:
-        raise BadRequest('Cents is not an integer')
-
-    # Validate the charge timestamp
-    try:
-        timestamp = datetime.strptime(
-            request.form['datetime'], '%Y-%m-%dT%H:%M:%S')
-    except KeyError, e:
-        raise BadRequest('Missing datetime')
-    except ValueError, e:
-        raise BadRequest('Bad datetime format')
-
-    # Validate the charge account ID
-    try:
-        account_id = str(request.form['account_id'])
-    except KeyError, e:
-        raise BadRequest('Missing account ID')
+    account_id = request.form.get('account_id')
+    cents = request.form.get('cents', type=int)
+    timestamp = request.form.get('datetime')
 
     # Load the charge account object...
     account = Account.query.filter_by(ext_account_id=account_id).first()
