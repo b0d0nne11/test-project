@@ -15,7 +15,9 @@ def make_json_response(payload):
 
 @app.route('/overview')
 def overview():
-    return render_template('overview.html')
+    charges = Charge.query.order_by('id desc').limit(10)
+    accounts = Account.query.order_by('lifetime_value desc').limit(10)
+    return render_template('overview.html', charges=charges, accounts=accounts)
 
 
 @app.route('/api/v1/accounts/')
