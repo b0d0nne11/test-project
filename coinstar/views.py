@@ -13,6 +13,7 @@ def make_json_response(payload):
         jsonify(payload), 200, {'Content-Type': 'application/json'})
 
 
+@app.route('/')
 @app.route('/overview')
 def overview():
     charges = Charge.query.order_by('id desc').limit(10)
