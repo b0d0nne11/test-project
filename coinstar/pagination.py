@@ -1,4 +1,5 @@
 from coinstar import app
+from coinstar.errors import GenericError, BadRequest, NotFound
 
 from base64 import b64encode, b64decode
 import json
@@ -9,11 +10,19 @@ p = inflect.engine()
 
 
 def encode(data):
-    return b64encode(json.dumps(data))
+    try:
+        page = b64encode(json.dumps(data))
+    except ValueError, e:
+        raise BadRequest('Failed to encode next page')
+    return page
 
 
 def decode(page):
-    return json.loads(b64decode(page))
+    try:
+        data = json.loads(b64decode(page))
+    except ValueError, e:
+        raise BadRequest('Failed to load page')
+    return data
 
 
 class Page():
@@ -26,12 +35,23 @@ class Page():
         if self.opaque_page is None:
             self.page = {
                 'last_id': 0,
-                'limit': int(args.get('limit', default=100))
+                'limit': args.get('limit', default=100)
             }
+            self.validate_page_limit()
         else:
             self.page = decode(self.opaque_page)
 
         self.total_entries = self.model.query.count()
+
+    def validate_page_limit(self):
+        try:
+            self.page['limit'] = int(self.page['limit'])
+        except (ValueError, TypeError), e:
+            raise BadRequest('Limit is not an integer')
+        if self.page['limit'] < 1:
+            raise BadRequest('Limit is too small')
+        if self.page['limit'] > 1000:
+            raise BadRequest('Limit is too large')
 
     def has_prev(self):
         return self.page['last_id'] > 0

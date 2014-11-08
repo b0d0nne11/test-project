@@ -24,23 +24,7 @@ def overview():
 @app.route('/api/v1/accounts/')
 def list_accounts():
     app.logger.debug('Entering list accounts handler')
-
-    # Validate the page limit
-    try:
-        page_limit = int(request.args.get('limit', default=100))
-    except ValueError, e:
-        raise BadRequest('Limit is not an integer')
-    if page_limit < 1:
-        raise BadRequest('Limit is too small')
-    if page_limit > 1000:
-        raise BadRequest('Limit is too large')
-
-    # Validate the page object
-    try:
-        page = Page(Account, request.args)
-    except ValueError, e:
-        raise BadRequest('Failed to load page')
-
+    page = Page(Account, request.args)
     return make_json_response(page.to_dict())
 
 
@@ -56,23 +40,7 @@ def get_account(account_id):
 @app.route('/api/v1/charges/', methods=['GET'])
 def list_charges():
     app.logger.debug('Entering list accounts handler')
-
-    # Validate the page limit
-    try:
-        page_limit = int(request.args.get('limit', default=100))
-    except ValueError, e:
-        raise BadRequest('Limit is not an integer')
-    if page_limit < 1:
-        raise BadRequest('Limit is too small')
-    if page_limit > 1000:
-        raise BadRequest('Limit is too large')
-
-    # Validate the page object
-    try:
-        page = Page(Charge, request.args)
-    except ValueError, e:
-        raise BadRequest('Failed to load page')
-
+    page = Page(Charge, request.args)
     return make_json_response(page.to_dict())
 
 
