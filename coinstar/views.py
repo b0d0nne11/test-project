@@ -89,23 +89,19 @@ def create_charge():
 
     # ... or create it if necessary
     if account is None:
-        app.logger.debug('Account "{}" not found'.format(account_id))
         account = Account(account_id)
-        try:
-            db.session.add(account)
-            db.session.commit()
-            app.logger.debug('Created {}'.format(account))
-        except:
-            raise GenericError('Failed to create account object')
+        db.session.add(account)
+        app.logger.debug('Created {}'.format(account))
 
     # Create the charge object
     charge = Charge(account, cents, timestamp)
+    db.session.add(charge)
+    app.logger.debug('Created {}'.format(charge))
+
     try:
-        db.session.add(charge)
         db.session.commit()
-        app.logger.debug('Created {}'.format(charge))
     except:
-        raise GenericError('Failed to create charge object')
+        raise GenericError('Failed to save DB changes')
 
     # Finally, return the charge object as JSON
     return make_json_response(charge.to_dict())

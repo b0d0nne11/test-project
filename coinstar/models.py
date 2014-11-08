@@ -50,7 +50,7 @@ class Charge(db.Model):
         self.datetime = datetime
 
     def __repr__(self):
-        return '<Charge {}>'.format(self.id)
+        return '<Charge {} {}>'.format(self.account.ext_account_id, self.cents)
 
     def to_dict(self):
         return {
