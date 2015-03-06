@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block welcome %}Welcome to Coinstar{% endblock %}
+{% block content %}
+  <div class="row">
+	  <div class="large-12 columns">
+      <h3>Get Account Value</h3>
+	    <input type="text" name="account_id" placeholder="Account ID" />
+      <a href="#" id="fetch_value" class="small button right">Fetch Value</a>
+      <p>Lifetime account value: <span id="lifetime_value"></span></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="large-6 columns">
+      <h3>Latest Charges</h3>
+      <table width="100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Account</th>
+            <th>Amount</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for charge in charges %}
+          <tr>
+            <td class="text-right">{{ charge.id }}</td>
+            <td>{{ charge.account.ext_account_id }}</td>
+            <td class="text-right">{{ charge.cents }}¢</td>
+            <td>{{ charge.datetime }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="large-6 columns">
+      <h3>Highest Value Accounts</h3>
+      <table width="100%">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Lifetime Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for account in accounts %}
+          <tr>
+            <td>{{ account.ext_account_id }}</td>
+            <td class="text-right">{{ account.lifetime_value }}¢</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+{% block footer %}
+  {{ super() }}
+  <script type=text/javascript>
+    $(function() {
+      $('a#fetch_value').bind('click', function() {
+        $("span#lifetime_value").text('');
+        if ($('input[name="account_id"]').val() == '') {
+          return
+        }
+        $.getJSON('/api/v1/accounts/' + $('input[name="account_id"]').val(), {}, function(account) {
+          $("span#lifetime_value").text(account.lifetime_value + '¢');
+        }).fail(function() {
+          $("span#lifetime_value").text('Not found');
+        });
+      });
+    });
+  </script>
+{% endblock %}

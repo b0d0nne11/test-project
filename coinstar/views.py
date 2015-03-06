@@ -3,7 +3,7 @@ from coinstar.errors import GenericError, BadRequest, NotFound
 from coinstar.models import db, Account, Charge
 from coinstar.pagination import Page
 
-from flask import request, jsonify, make_response
+from flask import request, jsonify, make_response, render_template
 from datetime import datetime
 import re
 
@@ -11,6 +11,14 @@ import re
 def make_json_response(payload):
     return make_response(
         jsonify(payload), 200, {'Content-Type': 'application/json'})
+
+
+@app.route('/')
+@app.route('/overview')
+def overview():
+    charges = Charge.query.order_by('id desc').limit(10)
+    accounts = Account.query.order_by('lifetime_value desc').limit(10)
+    return render_template('overview.html', charges=charges, accounts=accounts)
 
 
 @app.route('/api/v1/accounts/')
