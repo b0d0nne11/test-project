@@ -17,18 +17,3 @@ import coinstar.errors
 @app.errorhandler(coinstar.errors.GenericError)
 def handle_bad_request(error):
     return error.response()
-
-
-@app.errorhandler(coinstar.errors.BadRequest)
-def handle_bad_request(error):
-    return error.response()
-
-
-@app.errorhandler(coinstar.errors.NotFound)
-def handle_bad_request(error):
-    return error.response()
-
-
-@app.errorhandler(coinstar.errors.MethodNotAllowed)
-def handle_bad_request(error):
-    return error.response()
